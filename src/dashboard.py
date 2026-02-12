@@ -1,5 +1,5 @@
 from dash import Dash, Input, Output, State
-import dash_bootstrap_components as dbc
+import numpy as np
 import plotly.graph_objects as go
 
 from data_loader import (
@@ -23,6 +23,7 @@ class Dashboard:
         self.app.layout = app_layout()
 
         self.star_data: None | StarSet = None
+        self.orbit_data: None | tuple[list[any], list[any]] = None
 
     def start(self) -> None:
 
@@ -36,7 +37,8 @@ class Dashboard:
             State("map_range", "value"),
             State("map_center_x", "value"),
             State("map_center_y", "value"),
-            State("map_radio_options", "value")],
+            State("enable_orbits", "on"),
+            State("enable_names", "on")],
         )
         def update_starmap(
             _refresh_button: int,
@@ -45,13 +47,17 @@ class Dashboard:
             range: float,
             center_x: float,
             center_y: float,
-            radio_options: list[bool],
+            enable_orbits: bool,
+            enable_names: bool
         ) -> None:
             if not data_filepath:
                 return go.Figure() # TODO Add Error
 
             self.star_data = load_starset_data(data_filepath)
-            show_name = True
+            if enable_orbits:
+                self.orbit_data = load_orbits(orbit_filepath)
+
+            marker_size = [np.exp(-(mag-19.0)/2.5)*10.0 for mag in self.star_data['mag']]
 
             fig_2d = go.Figure()
             fig_2d.add_trace(
@@ -59,17 +65,18 @@ class Dashboard:
                     x=self.star_data["x"],
                     y=self.star_data["y"],
                     customdata=self.star_data["name"],
-                    mode="markers+text" if show_name else "markers",
-                    text=self.star_data["name"] if show_name else None,
+                    mode="markers+text" if enable_names else "markers",
+                    text=self.star_data["name"] if enable_names else None,
                     textposition="top center",
                     textfont={
                         "size": 8,
-                        "color": "white",
+                        "color": "grey",
                         "family": "Times New Roman"
                     },
                     marker={
-                        "size": 5,
+                        "size": marker_size,
                         "color": "cyan",
+                        # "colorscale": "RdBu",
                         "opacity": 0.7
                     }
                 )
@@ -91,7 +98,12 @@ class Dashboard:
                     "gridcolor": "rgba(0, 0, 0, 0.3)"
                 },
                 showlegend=False,
-                margin=dict(t=20, b=20, r=20, l=20),
+                margin={
+                    "t": 20,
+                    "b": 20,
+                    "r": 20,
+                    "l": 20
+                },
                 plot_bgcolor="rgba(0,0,0,0)",
                 paper_bgcolor="rgba(0,0,0,0)",
             )
@@ -104,7 +116,7 @@ class Dashboard:
             )
 
             if orbit_filepath:
-                orbit_data = load_orbits(orbit_filepath)
+                fig_2d
 
             return fig_2d, self.star_data["name"]
 
@@ -124,31 +136,6 @@ class Dashboard:
         )
         def update_neighbor_table(star_name: str) -> None:
             table_data = find_neighbor_stars(self.star_data, star_name)
-
-            # table_data = [
-            #     {"star": star_name, "distance": 1.2},
-            #     {"star": "Beta", "distance": 3.4},
-            #     {"star": "Gamma", "distance": 2.1},
-            #     {"star": "Delta", "distance": 4.8},
-            #     {"star": "Epsilon", "distance": 0.9},
-            #     {"star": "Zeta", "distance": 5.6},
-            #     {"star": "Eta", "distance": 3.2},
-            #     {"star": "Theta", "distance": 6.7},
-            #     {"star": "Iota", "distance": 1.8},
-            #     {"star": "Kappa", "distance": 2.9},
-            #     {"star": "Lambda", "distance": 7.1},
-            #     {"star": "Mu", "distance": 4.2},
-            #     {"star": "Nu", "distance": 5.0},
-            #     {"star": "Xi", "distance": 3.7},
-            #     {"star": "Omicron", "distance": 6.3},
-            #     {"star": "Pi", "distance": 2.4},
-            #     {"star": "Rho", "distance": 1.5},
-            #     {"star": "Sigma", "distance": 4.9},
-            #     {"star": "Tau", "distance": 5.8},
-            #     {"star": "Upsilon", "distance": 3.0},
-            #     {"star": "Phi", "distance": 6.0},
-            # ]
-
             return table_data
 
         self.app.run(

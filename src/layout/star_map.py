@@ -1,5 +1,6 @@
 from dash import dash_table, dcc, html
 import dash_bootstrap_components as dbc
+import dash_daq as daq
 import plotly.express as px
 
 CARD_HEIGHT = "87vh"
@@ -101,13 +102,39 @@ def draw_config_box() -> html.Div:
                             ])
                         ]),
 
-                        dcc.RadioItems(
-                            options=[
-                                "Enable Names",
-                                "Enale Orbits"
-                            ],
-                            id="map_radio_options"
-                        ),
+                        html.Br(),
+
+                        html.Div([
+                            dbc.Row([
+                                dbc.Col([
+                                    html.H5("Enable Orbits")
+                                ], width=9),
+                                dbc.Col([
+                                    daq.BooleanSwitch(
+                                        id="enable_orbits",
+                                        on=True,
+                                        color="#20c997"
+                                    ),
+                                ], width=3)
+                            ])
+                        ]),
+
+                        html.Div([
+                            dbc.Row([
+                                dbc.Col([
+                                    html.H5("Enable Star Names")
+                                ], width=9),
+                                dbc.Col([
+                                    daq.BooleanSwitch(
+                                        id="enable_names",
+                                        on=True,
+                                        color="#20c997"
+                                    ),
+                                ], width=3)
+                            ])
+                        ]),
+
+                        html.Br(),
 
                         dbc.Button(
                             "Refresh Map",
@@ -154,58 +181,7 @@ def draw_neighbor_table() -> html.Div:
                                     {"name": "Star", "id": "star"},
                                     {"name": "Distance (arcseconds)", "id": "distance"},
                                 ],
-                                data = [
-                                    {"star": "Alpha", "distance": 1.2},
-                                    {"star": "Beta", "distance": 3.4},
-                                    {"star": "Gamma", "distance": 2.1},
-                                    {"star": "Delta", "distance": 4.8},
-                                    {"star": "Epsilon", "distance": 0.9},
-                                    {"star": "Zeta", "distance": 5.6},
-                                    {"star": "Eta", "distance": 3.2},
-                                    {"star": "Theta", "distance": 6.7},
-                                    {"star": "Iota", "distance": 1.8},
-                                    {"star": "Kappa", "distance": 2.9},
-                                    {"star": "Lambda", "distance": 7.1},
-                                    {"star": "Mu", "distance": 4.2},
-                                    {"star": "Nu", "distance": 5.0},
-                                    {"star": "Xi", "distance": 3.7},
-                                    {"star": "Omicron", "distance": 6.3},
-                                    {"star": "Pi", "distance": 2.4},
-                                    {"star": "Rho", "distance": 1.5},
-                                    {"star": "Sigma", "distance": 4.9},
-                                    {"star": "Tau", "distance": 5.8},
-                                    {"star": "Upsilon", "distance": 3.0},
-                                    {"star": "Phi", "distance": 6.0},
-                                    {"star": "Chi", "distance": 2.6},
-                                    {"star": "Psi", "distance": 7.4},
-                                    {"star": "Omega", "distance": 8.2},
-                                    {"star": "Vega", "distance": 9.1},
-                                    {"star": "Alpha", "distance": 1.2},
-                                    {"star": "Beta", "distance": 3.4},
-                                    {"star": "Gamma", "distance": 2.1},
-                                    {"star": "Delta", "distance": 4.8},
-                                    {"star": "Epsilon", "distance": 0.9},
-                                    {"star": "Zeta", "distance": 5.6},
-                                    {"star": "Eta", "distance": 3.2},
-                                    {"star": "Theta", "distance": 6.7},
-                                    {"star": "Iota", "distance": 1.8},
-                                    {"star": "Kappa", "distance": 2.9},
-                                    {"star": "Lambda", "distance": 7.1},
-                                    {"star": "Mu", "distance": 4.2},
-                                    {"star": "Nu", "distance": 5.0},
-                                    {"star": "Xi", "distance": 3.7},
-                                    {"star": "Omicron", "distance": 6.3},
-                                    {"star": "Pi", "distance": 2.4},
-                                    {"star": "Rho", "distance": 1.5},
-                                    {"star": "Sigma", "distance": 4.9},
-                                    {"star": "Tau", "distance": 5.8},
-                                    {"star": "Upsilon", "distance": 3.0},
-                                    {"star": "Phi", "distance": 6.0},
-                                    {"star": "Chi", "distance": 2.6},
-                                    {"star": "Psi", "distance": 7.4},
-                                    {"star": "Omega", "distance": 8.2},
-                                    {"star": "Vega", "distance": 9.1},
-                                ],
+                                data=[],
                                 id="neighbor_table",
                                 fixed_rows={
                                     "headers": True
@@ -250,6 +226,9 @@ def EXAMPLE():
                                 paper_bgcolor= 'rgba(0, 0, 0, 255)',
                             ),
                             id="star_map_2d",
+                            style={
+                                "height": "83vh"
+                            },
                             config={
                                 'displayModeBar': False,
                                 # "scrollZoom": True
