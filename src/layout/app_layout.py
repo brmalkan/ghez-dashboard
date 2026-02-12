@@ -43,7 +43,7 @@ def app_layout() -> html.Div:
                 ),
                 dcc.Tab(
                     children=[
-                        draw_star_map()
+                        # draw_star_map()
                     ],
                     label="Empty Tab 1",
                     style=tab_style_unselected,
@@ -51,7 +51,7 @@ def app_layout() -> html.Div:
                 ),
                 dcc.Tab(
                     children=[
-                        draw_star_map()
+                        # draw_star_map()
                     ],
                     label="Empty Tab 2",
                     style=tab_style_unselected,

@@ -38,18 +38,6 @@ def load_starset_data(data_filepath: str) -> dict[str, list[float]]:
 
     return data
 
-def find_star_coordinates(data, star_name):
-    """Find star coordinates by name"""
-    try:
-        idx = data['name'].index(star_name)
-        return {
-            'found': True,
-            'x': data['x'][idx],
-            'y': data['y'][idx]
-        }
-    except ValueError:
-        return {'found': False}
-
 def load_orbits(
     orbits_file: str, tStart=1994., tEnd=2020., dt=0.01
 ) -> tuple[list[any], list[any]]:
@@ -82,3 +70,6 @@ def load_orbits(
         res.append(x[:, 0:2].tolist())  # Convert numpy array to list
 
     return res, names
+
+def find_neighbor_stars(star_data: starset.StarSet):
+    pass
