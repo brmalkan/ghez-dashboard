@@ -152,7 +152,7 @@ def draw_neighbor_table() -> html.Div:
                             dash_table.DataTable(
                                 columns=[
                                     {"name": "Star", "id": "star"},
-                                    {"name": "Distance", "id": "distance"},
+                                    {"name": "Distance (arcseconds)", "id": "distance"},
                                 ],
                                 data = [
                                     {"star": "Alpha", "distance": 1.2},

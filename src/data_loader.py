@@ -1,6 +1,6 @@
 import numpy as np
 
-from gcwork import starset
+from gcwork.starset import StarSet
 from gcwork import orbits
 
 def load_starset_data(data_filepath: str) -> dict[str, list[float]]:
@@ -8,7 +8,7 @@ def load_starset_data(data_filepath: str) -> dict[str, list[float]]:
     Load star position data from alignment files
     """
 
-    s = starset.StarSet(data_filepath)
+    s = StarSet(data_filepath)
 
     name = np.array(s.getArray('name')).tolist()
     x = np.array(s.getArray('x')).tolist()
@@ -71,5 +71,41 @@ def load_orbits(
 
     return res, names
 
-def find_neighbor_stars(star_data: starset.StarSet):
-    pass
+def find_neighbor_stars(
+    star_dataset: StarSet,
+    ref_star_name: str
+) -> list[dict[str, str | float]]:
+    distance_dict = {}
+    table_data = []
+    i = 0
+
+    ref_star_idx = star_dataset["name"].index(ref_star_name)
+    ref_pos_x = star_dataset["x"][ref_star_idx]
+    ref_pos_y = star_dataset["y"][ref_star_idx]
+
+    for idx in range(len(star_dataset["x"])):
+        name = star_dataset["name"][idx]
+        if name == ref_star_name:
+            continue
+
+        dx = ref_pos_x - star_dataset["x"][idx]
+        dy = ref_pos_y - star_dataset["y"][idx]
+        distance = np.sqrt(dx**2 + dy**2)
+        distance_dict[name] = distance
+
+    sorted_distance_dict = {
+        name: dist for name, dist in sorted(
+            distance_dict.items(),
+            key=lambda item: item[1]
+        )
+    }
+
+    for name, dist in sorted_distance_dict.items():
+        table_data.append(
+            {"star": name, "distance": round(dist, 5)}
+        )
+        i += 1
+        if i >= 100:
+            break
+
+    return table_data
