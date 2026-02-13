@@ -1,10 +1,10 @@
 # UCLA Galactic Center Group StarMap
 
+![GCG-StarMap Dashboard](assets/dashboard_example.png)
+
 The GCG-StarMap dashboard is a dash/plotly app used to view star and orbit data from UCLA's Galactic Center Group.
 
 ## Installation
-
-![GCG-StarMap Dashboard](assets/dashboard_example.png)
 
 Requires Python >= 3.13.7. The -e flag installs the package in "editable" mode, so changes in the source code are immediately reflected without reinstalling.
 
