@@ -57,7 +57,22 @@ class Dashboard:
             if enable_orbits:
                 self.orbit_data = load_orbits(orbit_filepath)
 
-            marker_size = [np.exp(-(mag-19.0)/2.5)*10.0 for mag in self.star_data['mag']]
+            marker_size = [
+                np.exp(-(mag-19.0)/2.5)*10.0
+                for mag in self.star_data['mag']
+            ]
+            marker_color = [
+                "red" if name == "SgrA" else "cyan"
+                for name in self.star_data["name"]
+            ]
+            marker_symbol = [
+                "star" if name == "SgrA" else "circle"
+                for name in self.star_data["name"]
+            ]
+            marker_opacity = [
+                1 if name == "SgrA" else 0.7
+                for name in self.star_data["name"]
+            ]
 
             fig_2d = go.Figure()
             fig_2d.add_trace(
@@ -75,9 +90,13 @@ class Dashboard:
                     },
                     marker={
                         "size": marker_size,
-                        "color": "cyan",
-                        # "colorscale": "RdBu",
-                        "opacity": 0.7
+                        "color": marker_color,
+                        "symbol": marker_symbol,
+                        "opacity": marker_opacity,
+                        "line": {
+                            "color": "white",
+                            "width": 1
+                        }
                     }
                 )
             )
@@ -115,8 +134,18 @@ class Dashboard:
                 )
             )
 
-            if orbit_filepath:
-                fig_2d
+            if enable_orbits and orbit_filepath:
+                for orbit, name in zip(self.orbit_data[0], self.orbit_data[1]):
+                    orbit = np.array(orbit)
+                    fig_2d.add_trace(
+                        go.Scatter(
+                            x=orbit[:, 0],
+                            y=orbit[:, 1],
+                            mode="lines",
+                            opacity=0.4,
+                            name=name
+                        )
+                    )
 
             return fig_2d, self.star_data["name"]
 

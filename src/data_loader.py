@@ -65,9 +65,9 @@ def load_orbits(
         orb.o = float(star[6])
         orb.w = float(star[7])
 
-        (x, v, a) = orb.kep2xyz(epochs=t, mass=4.e6, dist=8000.)  # possible to change mass and R0 here if needed
+        (x, v, a) = orb.kep2xyz(epochs=t, mass=4.e6, dist=8000.)
         names.append(star[0])
-        res.append(x[:, 0:2].tolist())  # Convert numpy array to list
+        res.append(x[:, 0:2].tolist())
 
     return res, names
 
